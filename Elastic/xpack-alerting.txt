@@ -1,0 +1,360 @@
+## Step 1 - Watcher APIs
+
+# 1.1 - Inspect Watcher stats
+GET _xpack/watcher/stats
+
+## Step 2 - Excessive shard count logging
+
+# 2.1 - Inspect cluster stats
+GET _cluster/stats
+
+# 2.2 - Create shard count Watch
+#       Version 1 - only schedule and input
+PUT _xpack/watcher/watch/cluster_shard_count
+{
+  "metadata": {
+    "max_shards": 20
+  },
+  "trigger": {
+    "schedule": { "interval": "1m" }
+  },
+  "input": {
+    "http" : {
+      "request" : {
+        "host" : "localhost",
+        "port" : 9200,
+        "scheme": "https",
+        "auth": {
+          "basic": {
+            "username": "elastic",
+            "password": "changeme"
+          }
+        },
+        "path" : "/_cluster/stats"
+      }
+    }
+  }
+}
+
+# 2.3 Check results of watch
+GET .watcher-history-*/_search
+{
+  "query": {
+    "match_all": {}
+  },
+  "sort": { "trigger_event.triggered_time": "desc"}
+}
+
+# 2.4 Version 2 - Add condition and action
+PUT _xpack/watcher/watch/cluster_shard_count
+{
+  "metadata": {
+    "max_shards": 30
+  },
+  "trigger": {
+    "schedule": { "interval": "1m" }
+  },
+  "input": {
+    "http" : {
+      "request" : {
+        "host" : "localhost",
+        "port" : 9200,
+        "scheme": "https",
+        "auth": {
+          "basic": {
+            "username": "elastic",
+            "password": "changeme"
+          }
+        },
+        "path" : "/_cluster/stats"
+      }
+    }
+  },
+  "condition" : {
+    "compare" : { "ctx.payload.indices.shards.total" : { "gt" : "{{ctx.metadata.max_shards}}" } } 
+  },
+  "actions" : {
+    "log_warn" : {
+      "logging" : {
+        "text" : "The current number of shards in the cluster ({{ctx.payload.indices.shards.total}}) exceeds the set threshold ({{ctx.metadata.max_shards}}).",
+        "level": "warn"
+      }
+    }
+  }
+}
+
+# 2.5 Add index with shards
+PUT test
+{
+  "settings" : {
+    "index" : {
+        "number_of_shards" : 20, 
+        "number_of_replicas" : 0
+    }
+  }
+}
+
+# 2.6 Delete created index
+DELETE test
+
+# 2.7 Version 3 - Throttle logging messages to max one every 10 minutes
+PUT _xpack/watcher/watch/cluster_shard_count
+{
+  "metadata": {
+    "max_shards": 30
+  },
+  "trigger": {
+    "schedule": { "interval": "1m" }
+  },
+  "input": {
+    "http" : {
+      "request" : {
+        "host" : "localhost",
+        "port" : 9200,
+        "scheme": "https",
+        "auth": {
+          "basic": {
+            "username": "elastic",
+            "password": "changeme"
+          }
+        },
+        "path" : "/_cluster/stats"
+      }
+    }
+  },
+  "condition" : {
+    "compare" : { "ctx.payload.indices.shards.total" : { "gt" : "{{ctx.metadata.max_shards}}" } } 
+  },
+  "actions" : {
+    "log_warn" : {
+      "throttle_period": "5m",
+      "logging" : {
+        "text" : "The current number of shards in the cluster ({{ctx.payload.indices.shards.total}}) exceeds the set threshold ({{ctx.metadata.max_shards}}).",
+        "level": "warn"
+      }
+    }
+  }
+}
+
+# 2.8 Deactivate watch
+PUT _xpack/watcher/watch/cluster_shard_count/_deactivate
+
+## Step 3 - Alert on process existance
+
+# 3.1 Verify Metricbeat is logging data successfully
+GET metricbeat-*/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+# 3.2 - Inspect Metricbeats data
+GET metricbeat-*/_search
+{
+  "query" : {
+    "term": {
+      "system.process.name": {"value": "Google Chrome"}
+    }
+  }
+}
+
+# 3.3 Version 1 - Record search
+PUT /_xpack/watcher/watch/my_process_watch
+{
+  "trigger" : {
+    "schedule" : {"interval" : "60s"}
+  },
+  "input" : {
+    "search" : {
+      "request" : {
+        "indices" : ["metricbeat*"],
+        "body" : {
+          "query" : {
+              "bool" : {
+                "must" : {
+                  "term": {
+                    "system.process.name": {"value": "Google Chrome"}
+                  }
+                 },
+                 "filter": {
+                  "range": {
+                    "@timestamp": { "gt" : "now-2m"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+  },
+  "condition" : {
+    "compare" : {"ctx.payload.hits.total" : { "gt" : 0}}
+  }
+}
+
+# 3.4 Add index for keeping results
+PUT my_alert_index
+{
+  "mappings" : {
+    "alert" : {
+      "properties" : {
+        "alert_name" : {"type" : "text"},
+        "alert_text" : {"type" : "keyword"},
+        "alert_time" : {"type" : "date"}
+      }
+    }
+  }
+}
+
+# 3.5 Version 2 - Write results to separate index
+PUT /_xpack/watcher/watch/my_process_watch
+{
+  "trigger" : {
+    "schedule" : {"interval" : "60s"}
+  },
+  "input" : {
+    "search" : {
+      "request" : {
+        "indices" : ["metricbeat*"],
+        "body" : {
+          "query" : {
+              "bool" : {
+                "must" : {
+                  "term": {
+                    "system.process.name": {"value": "Google Chrome"}
+                  }
+                 },
+                 "filter": {
+                  "range": {
+                    "@timestamp": { "gt" : "now-2m"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+  },
+  "condition" : {
+    "compare" : {"ctx.payload.hits.total" : { "gt" : 0}}
+  },
+  "actions": {
+    "index_payload" : {
+      "transform": {
+          "script": "return ['alert_name': ctx.watch_id , 'alert_text': \"Alerted and action taken\" , 'alert_time': ctx.trigger.triggered_time] "
+        },
+      "index" : {
+        "index" : "my_alert_index",
+        "doc_type" : "alert"
+      }
+    }
+  } 
+}
+
+# 3.6 Look up indexed results
+GET /my_alert_index/_search
+{
+    "query" : {
+        "term": {
+            "alert_name": {"value": "my_process_watch"}
+         }
+     } 
+}
+
+# 3.8 Deactivate watch
+PUT _xpack/watcher/watch/my_process_watch/_deactivate
+
+# 4.1 Missing things
+PUT _xpack/watcher/watch/flights_watch/
+{
+  "trigger": {
+    "schedule": {
+      "interval": "1h"
+    }
+  },
+  "input": {
+    "search": {
+      "request": {
+        "search_type": "query_then_fetch",
+        "indices": [
+          "flights-*"
+        ],
+        "types": [],
+        "body": {
+          "query": {
+            "range": {
+              "{{ctx.metadata.timefield}}": {
+                "gte": "now-{{ctx.metadata.offset}}-{{ctx.metadata.window_period}}",
+                "lte": "now-{{ctx.metadata.offset}}"
+              }
+            }
+          },
+          "aggs": {
+            "periods": {
+              "filters": {
+                "filters": {
+                  "history": {
+                    "range": {
+                      "{{ctx.metadata.timefield}}": {
+                        "gte": "now-{{ctx.metadata.offset}}-{{ctx.metadata.window_period}}",
+                        "lte": "now-{{ctx.metadata.offset}}-{{ctx.metadata.last_period}}"
+                      }
+                    }
+                  },
+                  "last_period": {
+                    "range": {
+                      "{{ctx.metadata.timefield}}": {
+                        "gte": "now-{{ctx.metadata.offset}}-{{ctx.metadata.last_period}}",
+                        "lte": "now-{{ctx.metadata.offset}}"
+                      }
+                    }
+                  }
+                }
+              },
+              "aggs": {
+                "things": {
+                  "terms": {
+                    "field": "{{ctx.metadata.thing}}",
+                    "size": 10000
+                  }
+                }
+              }
+            }
+          },
+          "size": 0
+        }
+      }
+    }
+  },
+  "condition": {
+    "script": {
+      "inline": "return ctx.payload.aggregations.periods.buckets.history.things.buckets.size() > ctx.payload.aggregations.periods.buckets.last_period.things.buckets.size();",
+      "lang": "painless"
+    }
+  },
+  "actions": {
+    "log": {
+      "transform": {
+        "script": {
+          "inline": "def last_period=ctx.payload.aggregations.periods.buckets.last_period.things.buckets.stream().map(e -> e.key).collect(Collectors.toList()); return ctx.payload.aggregations.periods.buckets.history.things.buckets.stream().map(e -> e.key).filter(p -> !last_period.contains(p)).collect(Collectors.toList());",
+          "lang": "painless"
+        }
+      },
+      "logging": {
+        "level": "info",
+        "text": "{{ctx.metadata.thing}} missing in the last {{ctx.metadata.last_period}} that were present in the prior day: {{#ctx.payload._value}}{{.}} {{/ctx.payload._value}}"
+      }
+    }
+  },
+  "metadata": {
+    "timefield": "@timestamp",
+    "last_period": "24h",
+    "offset": "2y",
+    "window_period": "48h",
+    "thing": "DEST"
+  },
+  "throttle_period_in_millis": 300000
+}
+
+
