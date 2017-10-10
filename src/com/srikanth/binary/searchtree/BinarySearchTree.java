@@ -36,5 +36,31 @@ public class BinarySearchTree {
 			printNodeInOrder(root.right);
 		}
 	}
-
+	
+	public static void printNodePreOrder(TreeNode root){
+		if(root == null){
+			System.out.println("Tree is empty");
+		}
+		
+		System.out.println(root.data);
+		if(root.left != null){
+			printNodeInOrder(root.left);
+		}
+		if(root.right != null){
+			printNodeInOrder(root.right);
+		}
+	}
+	
+	public static void printNodePostOrder(TreeNode root){
+		if(root == null){
+			System.out.println("Tree is empty");
+		}
+		if(root.left != null){
+			printNodeInOrder(root.left);
+		}
+		if(root.right != null){
+			printNodeInOrder(root.right);
+		}
+		System.out.println(root.data);
+	}
 }
