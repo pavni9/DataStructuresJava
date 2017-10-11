@@ -1,5 +1,8 @@
 package com.srikanth.binary.searchtree;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class BinarySearchTree {
 	
 	public static TreeNode addNode(TreeNode root,int data){
@@ -62,5 +65,78 @@ public class BinarySearchTree {
 			printNodeInOrder(root.right);
 		}
 		System.out.println(root.data);
+	}
+	
+	public static int height(TreeNode root){
+		if(root == null){
+			return 0;
+		}else{
+			int lheight = height(root.left);
+			int rheight = height(root.right);
+			if(lheight>rheight){
+				return lheight+1;
+			}
+			else{
+				return rheight+1;
+			}
+		}
+		
+		
+	}
+	
+	public static void printNodesBFS(TreeNode root){
+		TreeNode temp = root;
+		if(temp == null){
+			System.out.println("Tree is empty");
+		}else{
+			
+			Queue<TreeNode> queue = new LinkedList<>();
+			queue.add(temp);
+			while(!queue.isEmpty()){
+				TreeNode node = queue.poll();
+				System.out.println(node.data);
+				if(node.left!= null){
+					queue.add(node.left);
+				}
+				if(node.right!= null){
+					queue.add(node.right);
+				}
+			}
+			
+		}
+	}
+	
+	public static void printNodesAtLevel(TreeNode root,int level){
+		if(root == null){
+			System.out.println("Tree is empty");
+		}else{
+			if(level == 0){
+				System.out.println(root.data);
+			}
+			else{
+				if(root.left!= null){
+					printNodesAtLevel(root.left,level-1);
+				}
+				if(root.right!= null){
+					printNodesAtLevel(root.right,level-1);
+				}
+			}
+		}
+	}
+	
+	public static int heightOfTree(TreeNode root){
+		if(root == null){
+			System.out.println("Tree is empty");
+		}
+		if(root.left==null &&root.right==null ){
+			return 1;
+		}
+			int lheight = heightOfTree(root.left);
+			int rheight = heightOfTree(root.right);
+			if(lheight>rheight)
+				return lheight+1;
+			else
+				return rheight+1;
+		
 	}
 }

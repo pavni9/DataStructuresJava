@@ -17,7 +17,12 @@ public class TestBinarySearchTree {
 		BinarySearchTree.printNodePreOrder(root);
 		System.out.println("****Postorder****");
 		BinarySearchTree.printNodePostOrder(root);
-
+		System.out.println("****BST Level order Traversal****");
+		BinarySearchTree.printNodesBFS(root);
+		System.out.println("****BST Print only one level nodes****");
+		BinarySearchTree.printNodesAtLevel(root, 2);
+		System.out.println("****Height of the Tree is****");
+		System.out.println("Height of the tree is "+BinarySearchTree.heightOfTree(root));
 	}
 
 }
