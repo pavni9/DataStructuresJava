@@ -1,6 +1,8 @@
 package com.srikanth.binary.searchtree;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 public class BinarySearchTree {
@@ -138,5 +140,28 @@ public class BinarySearchTree {
 			else
 				return rheight+1;
 		
+	}
+	
+	public static int sumOfNodesAtGivenLevel(TreeNode root,int level){
+		List<Integer> arrayList = new ArrayList<>();
+		sumofNodesAtLevel(root,level,arrayList);
+		if(arrayList.size()<=0){
+			return 0;
+		}else{
+			return arrayList.stream().reduce(0, Integer::sum);
+		}
+	}
+	
+	public static void sumofNodesAtLevel(TreeNode root,int level,List<Integer> aList){
+		if(level == 0){
+			aList.add(root.data);
+		}else{
+			if(root.left != null){
+				sumofNodesAtLevel(root.left,level-1,aList);
+			}
+			if(root.right != null){
+				sumofNodesAtLevel(root.right,level-1,aList);
+			}
+		}
 	}
 }

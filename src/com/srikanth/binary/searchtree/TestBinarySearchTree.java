@@ -23,6 +23,8 @@ public class TestBinarySearchTree {
 		BinarySearchTree.printNodesAtLevel(root, 2);
 		System.out.println("****Height of the Tree is****");
 		System.out.println("Height of the tree is "+BinarySearchTree.heightOfTree(root));
+		System.out.println("****Sum of Integers at Level ****");
+		System.out.println("Sum of nodes at given level "+BinarySearchTree.sumOfNodesAtGivenLevel(root, 2));
 	}
 
 }
