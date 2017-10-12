@@ -1,7 +1,7 @@
 Hi,
 
 Regarding the CORS issue I am facing,after doing some debugging and research the issue seems to be with the rest response (security rules that are applied
-to the server on which the rest services are hosted) to resolve this issue some security changes are required on rest server side.Thease are the options we 
+to the server on which the rest services are hosted) to resolve this issue some security changes are required on rest server side.These are the options we 
 have to solve the issue 
 Option1
 	Adding the required headers in response for each web service(tedious process)
@@ -13,7 +13,7 @@ Option2
 	Implementing an CrossFilter by implementing javax.servlet.Filter and add above mentioned headers to every response  
 	
 	
-	
+Please correct me if I am missing something.	
 	
 References :
 1)https://github.com/angular/angular.js/issues/5009
