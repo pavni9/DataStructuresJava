@@ -1,0 +1,22 @@
+Hi,
+
+Regarding the CORS issue I am facing,after doing some debugging and research the issue seems to be with the rest response (security rules that are applied
+to the server on which the rest services are hosted) to resolve this issue some security changes are required on rest server side.Thease are the options we 
+have to solve the issue 
+Option1
+	Adding the required headers in response for each web service(tedious process)
+		response.addHeader("Access-Control-Allow-Origin", "*");
+        response.addHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, HEAD");
+        response.addHeader("Access-Control-Allow-Headers", "X-PINGOTHER, Origin, X-Requested-With, Content-Type, Accept");
+        response.addHeader("Access-Control-Max-Age", "1728000");
+Option2
+	Implementing an CrossFilter by implementing javax.servlet.Filter and add above mentioned headers to every response  
+	
+	
+	
+	
+References :
+1)https://github.com/angular/angular.js/issues/5009
+2)https://stackoverflow.com/questions/25860490/enable-cors-post-request-from-angularjs-to-jersey
+3)https://enable-cors.org/server.html 
+4)https://enable-cors.org/server_spring-boot_kotlin.html

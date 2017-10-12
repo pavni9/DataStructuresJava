@@ -1,7 +1,7 @@
 package com.srikanth.algorithms;
 
 public class StairCaseProblem {
-	// Function Definition
+	
 	public static int findStep(int n){
 	    if(n==1 || n==0){
 	        return 1;
