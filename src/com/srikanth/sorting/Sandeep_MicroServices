@@ -1,18 +1,20 @@
 I developed Micro-services and deployed on to Pivotal Cloud-foundry,I followed following steps to develops the services
-Pivotal Cloud Foundry
-	1)Creating Discovery Service (Creating Eureka Discovery Service)
+
+	1)Developed Micro-services using Spring-boot 1.5.7 version and deployed them onto cloud foundry.Discovery of services is managed by using Eureka Server and Load balancing using Ribbon. 
+	
+	2)Created Discovery Service (Creating Eureka Discovery Service)
 		Eureka Server using Spring Cloud
 		In application.yml file I configured the discovery server and used @EnableEurekaServer in spring-boot application to enable eureka server
 		
-	2)Creating MicroService (the Producer)		
+	3)Created MicroService (the Producer)		
 	
 		In application.yml provided the Discovery Server Access,Application Name for the producer to get registered with the discovery server.
 		 
-	3)Create Microservice Consumers find Service registered with Discovery Service (the consumer)
+	4)Created Microservice Consumers by finding Services registered with Discovery Service (the consumer)
 		
-		Created Consumers to find the Producer Service registered with Discovery Service.Used @EnableDiscoveryClient to find the Micro-services which this client can consume.
+		Created Consumers to find the Producer Services registered with Discovery Service.Used @EnableDiscoveryClient to find the Micro-services.
 	
-	4)Maven Dependencies 
+	5)Maven Dependencies 
   		spring-cloud-starter-eureka,spring-cloud-starter,spring-boot-starter-web,spring-cloud-starter-eureka-server
   	
-  	5) Developed micro-services and deployed onto Pivotal-cloud foundry using command line interface  command "cf push"
+  	6) Developed micro-services and deployed onto Pivotal-cloud foundry using command line interface  command "cf push"
