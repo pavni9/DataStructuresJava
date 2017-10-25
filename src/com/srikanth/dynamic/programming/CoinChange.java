@@ -6,9 +6,10 @@ public class CoinChange {
 	
 	public static void main(String args[]){
 		int arr[] = {1, 2, 3};
-        int n = 4;
-        System.out.println(countWays(n,arr));
-        
+        for(int n=1;n<=10;n++){
+        System.out.println(countWays(n,arr));        
+        System.out.println(coinChnageWays(n,arr));
+        }
 	}
 	
 	public static int countWays(int n,int[] arr){
@@ -21,5 +22,22 @@ public class CoinChange {
 			}
 		}
 		return ways[n];
+	}
+	
+	
+	public static int coinChnageWays(int amount,int[] coins){
+		int[] combinations = new int[amount+1];
+		combinations[0] = 1;
+		for(int coin:coins){
+			for(int i=1;i<combinations.length;i++){
+				if(i>=coin){
+					combinations[i]+=combinations[i-coin];
+				}
+				System.out.print(combinations[i]+" ");
+			}
+			System.out.println();
+		}
+		
+		return combinations[amount];
 	}
 }
