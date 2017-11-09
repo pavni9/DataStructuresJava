@@ -68,7 +68,7 @@ public class StairCaseProblem {
 		
 	}
 	public static void main(String args[]){		
-		for(int i=0;i<=10;i++){
+		for(int i=0;i<=45;i++){
 			System.out.println("Number of ways you can climb "+i+" steps is--->"+findStep(i));
 		}
 		
