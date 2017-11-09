@@ -1,0 +1,40 @@
+http://www.baeldung.com/swagger-2-documentation-for-spring-rest-api
+
+http://www.baeldung.com/jacoco
+
+https://stackoverflow.com/questions/42773730/department-name-and-number-of-students
+
+create table student(student_id int,student_name varchar(20));
+create table exam(subject varchar(20),student_id int);
+
+insert into student(1,'siri1');
+insert into student(2,'siri2');
+insert into student(3,'siri3');
+insert into student(4,'siri4');
+insert into student(5,'siri5');
+insert into student(6,'siri6');
+insert into student(7,'siri7');
+insert into student(8,'siri8');
+
+insert into exam('physics',1);
+insert into exam('chemistry',1);
+insert into exam('maths',1);
+insert into exam('physics',2);
+insert into exam('chemistry',2);
+insert into exam('maths',2);
+insert into exam('physics',2);
+insert into exam('chemistry',2);
+insert into exam('maths',2);
+insert into exam('physics',2);
+insert into exam('chemistry',2);
+insert into exam('maths',2);
+insert into exam('physics',2);
+insert into exam('chemistry',2);
+insert into exam('maths',2);
+insert into exam('physics',3);
+insert into exam('chemistry',3);
+insert into exam('maths',3);
+insert into exam('chemistry',2);
+insert into exam('maths',2);
+insert into exam('physics',3);
+insert into exam('chemistry',3);
