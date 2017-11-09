@@ -2,6 +2,7 @@ http://www.baeldung.com/swagger-2-documentation-for-spring-rest-api
 
 http://www.baeldung.com/jacoco
 
+https://stackoverflow.com/questions/42773730/department-name-and-number-of-students
 
 create table student(student_id int,student_name varchar(20));
 create table exam(subject varchar(20),student_id int);
