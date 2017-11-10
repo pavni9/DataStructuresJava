@@ -4,6 +4,35 @@ http://www.baeldung.com/jacoco
 
 https://stackoverflow.com/questions/42773730/department-name-and-number-of-students
 
+https://docs.docker.com/datacenter/install/linux/#step-4-join-more-nodes-to-ucp
+https://docs.docker.com/machine/examples/ocean/#step-2-generate-a-personal-access-token
+https://docs.docker.com/machine/get-started-cloud/#the-docker-machine-create-command
+https://medium.com/lucjuggery/discovering-docker-datacenter-cf0daccddc41
+https://logz.io/blog/docker-datacenter/
+https://medium.com/lucjuggery/discovering-docker-datacenter-cf0daccddc41  --- imp
+
+
+{Ansible}
+https://www.digitalocean.com/community/tutorials/configuration-management-101-writing-ansible-playbooks
+
+
+
+https://meteatamel.wordpress.com/2012/03/21/deadlock-detection-in-java/
+
+Table -- Student
+
+Student_ID
+Student_Name
+
+
+Examination
+
+Student_ID
+Subject
+
+select count(exam.subject),exam.subject from student stu,exam exam group by exam.subject; 
+
+
 create table student(student_id int,student_name varchar(20));
 create table exam(subject varchar(20),student_id int);
 
