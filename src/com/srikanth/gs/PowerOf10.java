@@ -3,7 +3,6 @@ package com.srikanth.gs;
 public class PowerOf10 {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		System.out.println(power10(20));
 		System.out.println(power10(10));
 		System.out.println(power10(100));		
